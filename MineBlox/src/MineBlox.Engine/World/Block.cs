@@ -1,10 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using MineBlox.Engine.World;
+
 
 namespace MineBlox.Engine.World
 {
-    internal class Block
+    public class Block
     {
+        public BlockType Type { get; }
+        public bool IsSolid => Type != BlockType.Air;
+
+        public Block(BlockType type)
+        {
+            Type = type;
+        }
     }
 }

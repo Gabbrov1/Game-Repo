@@ -83,6 +83,11 @@ namespace MineBlox.Engine.camera
                 _position -= Vector3.Normalize(Vector3.Cross(_front, _up)) * speed;
             if (keyboard.IsKeyDown(Keys.D))
                 _position += Vector3.Normalize(Vector3.Cross(_front, _up)) * speed;
+
+            if (keyboard.IsKeyDown(Keys.Space))
+                _position += _up * speed;
+            if (keyboard.IsKeyDown(Keys.LeftShift))
+                _position -= _up * speed;
         }
 
         // ---------------------------------------------------------------

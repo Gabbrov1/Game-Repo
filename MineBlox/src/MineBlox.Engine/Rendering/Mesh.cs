@@ -10,10 +10,8 @@ namespace MineBlox.Engine.Rendering
 
         public Mesh(float[] vertices)
         {
+            _vertexCount = vertices.Length / 4;
 
-            _vertexCount = vertices.Length / 3;
-
-            //Tells the GPU what to do with array
             _vaoHandle = GL.GenVertexArray();
             GL.BindVertexArray(_vaoHandle);
 
@@ -25,9 +23,13 @@ namespace MineBlox.Engine.Rendering
                 vertices,
                 BufferUsageHint.StaticDraw);
 
-
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            // Position attribute — location 0, 3 floats, stride 4 floats
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
+
+            // Brightness attribute — location 1, 1 float, offset 3 floats
+            GL.VertexAttribPointer(1, 1, VertexAttribPointerType.Float, false, 4 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
         }
         public void Draw()
         {

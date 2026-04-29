@@ -1,8 +1,10 @@
 #version 330 core
 
+in float vBrightness;
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+    vec3 grassColor = vec3(0.4, 0.8, 0.3);
+    FragColor = vec4(grassColor * vBrightness, 1.0);
 }

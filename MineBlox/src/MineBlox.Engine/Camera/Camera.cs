@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace MineBlox.Engine.camera
+namespace MineBlox.Engine.Camera
 {
     /// <summary>
     /// Represents a 3D perspective camera.
@@ -12,6 +12,8 @@ namespace MineBlox.Engine.camera
         private Vector3 _position;
         private Vector3 _front;
         private readonly Vector3 _up = Vector3.UnitY;
+
+        private readonly Frustum _frustum = new Frustum();
 
         private float _yaw;
         private float _pitch;
@@ -52,6 +54,13 @@ namespace MineBlox.Engine.camera
                 _aspectRatio,
                 0.1f,
                 _viewDistance);
+        }
+
+        public Frustum GetFrustum()
+        {
+            Matrix4 viewProjection = GetViewMatrix() * GetProjectionMatrix();
+            _frustum.Update(viewProjection);
+            return _frustum;
         }
 
         /// <summary>

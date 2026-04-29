@@ -24,7 +24,7 @@ namespace MineBlox.Engine.World
             for (int x = 0; x < Size; x++)
             for (int y = 0; y < Size; y++)
             for (int z = 0; z < Size; z++)
-                _blocks[x, y, z] = new Block(BlockType.Grass);
+                _blocks[x, y, z] = new Block(BlockType.Air);
         }
 
         public Block? GetBlock(int x, int y, int z)
@@ -37,11 +37,21 @@ namespace MineBlox.Engine.World
             return _blocks[x, y, z];
         }
 
+        public void SetBlock(int x, int y, int z, BlockType type)
+        {
+            if (x < 0 || x >= Size ||
+                y < 0 || y >= Size ||
+                z < 0 || z >= Size)
+                return;
+
+            _blocks[x, y, z] = new Block(type);
+        }
+
         public void BuildMesh()
         {
             float[] vertices = ChunkMesher.BuildMesh(this);
             _mesh = new Mesh(vertices);
-            Console.WriteLine($"Vertex count: {vertices.Length}");
+            //Console.WriteLine($"Vertex count: {vertices.Length}");
         }
 
         public void Draw()

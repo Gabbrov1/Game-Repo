@@ -6,11 +6,9 @@ using OpenTK.Mathematics;
 
 using System;
 
-
-
 using MineBlox.Engine.World;
 using MineBlox.Engine.Rendering;
-using MineBlox.Engine.camera;
+using MineBlox.Engine.Camera;
 
 
 namespace MineBlox.Engine.Core
@@ -30,6 +28,7 @@ namespace MineBlox.Engine.Core
         private int _height;
 
         private int _debugMode = 0;
+        private int _mouseState = 0;
 
         /// <summary>
         /// Initialises the window with the given dimensions and title.
@@ -49,9 +48,9 @@ namespace MineBlox.Engine.Core
                     Title = title
                 }
             )
-        { 
+        { }
 
-        }
+
 
         protected override void OnLoad()
         {
@@ -61,15 +60,9 @@ namespace MineBlox.Engine.Core
             
             GL.ClearColor(0.1f, 0.1f, 0.15f, 1.0f);// RGBA values
             
-            
-            CursorState = CursorState.Grabbed;
+            CursorState  = CursorState.Grabbed;
             
             _camera = new PlayerCamera(new Vector3(0f, 20f, 0f), (float)_width / _height);
-
-            _chunk = new Chunk(Vector3.Zero);
-            _chunk.BuildMesh();
-            Console.WriteLine($"Chunk mesh built.");
-
 
             _shader = new ShaderHandler("assets/shaders/basic.vert", "assets/shaders/basic.frag");
 
@@ -86,14 +79,20 @@ namespace MineBlox.Engine.Core
             if (_camera == null) return;
             Matrix4 view = _camera.GetViewMatrix();
             Matrix4 proj = _camera.GetProjectionMatrix();
-            
+
             _shader?.Use();
             _shader?.SetMatrix4("uView", view);
             _shader?.SetMatrix4("uProjection", proj);
             _shader?.SetMatrix4("uModel", Matrix4.Identity);
-            
-            _chunk?.Draw();
-            
+
+            Frustum frustum = _camera.GetFrustum();
+
+            Vector3 chunkMin = Vector3.Zero;
+            Vector3 chunkMax = new Vector3(Chunk.Size, Chunk.Size, Chunk.Size);
+
+            if (frustum.IsBoxInFrustum(chunkMin, chunkMax))
+                _chunk?.Draw();
+
             SwapBuffers();
         }
 
@@ -104,10 +103,35 @@ namespace MineBlox.Engine.Core
             float deltaTime = (float)e.Time;
 
             _camera?.ProcessKeyboard(KeyboardState, deltaTime);
-            _camera?.ProcessMouseMovement(MouseState.Delta.X, MouseState.Delta.Y);
+
+            if(_mouseState == 0)
+            {
+                _camera?.ProcessMouseMovement(MouseState.Delta.X, MouseState.Delta.Y);
+            }
+            
             if (KeyboardState.IsKeyDown(Keys.Escape))
                 Close();
 
+            if (KeyboardState.IsKeyReleased(Keys.F1))
+            {
+                _mouseState++;
+
+                if (_mouseState > 2) _mouseState = 0;
+
+                switch (_mouseState)
+                {
+                    case 0:
+                        CursorState = CursorState.Grabbed;
+                        break;
+                    case 1:
+                        CursorState = CursorState.Normal;
+                        break;
+                    case 2:
+                        CursorState = CursorState.Confined;
+                        break;
+
+                }
+            }
             if (KeyboardState.IsKeyReleased(Keys.F3))
             {
                 _debugMode++;
@@ -128,6 +152,12 @@ namespace MineBlox.Engine.Core
                 }              
                 
             }
+            
+        }
+
+        public void SetChunk(Chunk chunk)
+        {
+            _chunk = chunk;
         }
 
         protected override void OnUnload()

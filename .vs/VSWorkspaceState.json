@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\MineBlox",
+    "\\MineBlox\\assets",
+    "\\MineBlox\\src",
+    "\\MineBlox\\src\\MineBlox.Engine",
+    "\\MineBlox\\src\\MineBlox.Game"
+  ],
+  "SelectedNode": "\\MineBlox\\src\\MineBlox.Engine\\MineBlox.Engine.csproj",
+  "PreviewInSolutionExplorer": false
+}

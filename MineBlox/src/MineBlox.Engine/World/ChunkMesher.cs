@@ -15,13 +15,13 @@ namespace MineBlox.Engine.World
             {
                 Block? currentBlock = chunk.GetBlock(x, y, z);
                 if (currentBlock == null || !currentBlock.IsSolid) continue;
-                
+
                 foreach (Vector3i dir in FaceDirections)
                 {
                     if (!IsNeighbourSolid(chunk, x + dir.X, y + dir.Y, z + dir.Z))
                     {
-                        AddOffsetFace(vertices, GetFaceVertices(dir), x, y, z);
-                        
+                        float brightness = GetFaceBrightness(dir);
+                        AddOffsetFace(vertices, GetFaceVertices(dir), x, y, z, brightness);
                     }
                 }
             }
@@ -40,14 +40,27 @@ namespace MineBlox.Engine.World
             { X: 1 } => RightFace,
             _ => throw new ArgumentException($"Invalid face direction: {direction}")
         };
-        
-        private static void AddOffsetFace(List<float> vertices, float[] face, int x, int y, int z)
+
+        private static float GetFaceBrightness(Vector3i direction) =>
+            direction switch
+            {
+                { Y: 1 } => 1.0f,
+                { Z: 1 } => 0.8f,
+                { Z: -1 } => 0.8f,
+                { X: 1 } => 0.6f,
+                { X: -1 } => 0.6f,
+                { Y: -1 } => 0.4f,
+                _ => 1.0f
+            };
+
+        private static void AddOffsetFace(List<float> vertices, float[] face, int x, int y, int z, float brightness)
         {
             for (int i = 0; i < face.Length; i += 3)
             {
                 vertices.Add(face[i] + x);
                 vertices.Add(face[i + 1] + y);
                 vertices.Add(face[i + 2] + z);
+                vertices.Add(brightness);
             }
         }
 

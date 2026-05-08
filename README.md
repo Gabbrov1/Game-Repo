@@ -14,3 +14,12 @@ Features implemented so far:
 - Cube Generation based on voxel information.
 - Single mesh generation from array of vertexes.
 - Rendering of visible faces instead of displaying all faces.
+- Basic application of perlin noise.(requires further improvement and layering in order to achieve more realistic looking terrain)
+
+Planned Implementations:
+ - UV Mapping to cubes to allow meshing options.
+ - infinite chunk generation, based on current player position.
+ - Editable mesh, with differeing blocks.
+ - Implementing structures such as trees.
+ - Custom loader, simmilar to minecraft to allow for easy addition and edit of current blocks.
+
